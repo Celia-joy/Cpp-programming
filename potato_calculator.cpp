@@ -110,6 +110,31 @@ void handleBackspace() {
     refreshDisplay();
 }
 
+// Handles a calculator button or keyboard command.
+void handleCommand(int id) {
+    switch (id) {
+        case ID_0: handleDigit('0'); break;
+        case ID_1: handleDigit('1'); break;
+        case ID_2: handleDigit('2'); break;
+        case ID_3: handleDigit('3'); break;
+        case ID_4: handleDigit('4'); break;
+        case ID_5: handleDigit('5'); break;
+        case ID_6: handleDigit('6'); break;
+        case ID_7: handleDigit('7'); break;
+        case ID_8: handleDigit('8'); break;
+        case ID_9: handleDigit('9'); break;
+        case ID_DOT: handleDot(); break;
+        case ID_ADD: handleOperator('+'); break;
+        case ID_SUB: handleOperator('-'); break;
+        case ID_MUL: handleOperator('*'); break;
+        case ID_DIV: handleOperator('/'); break;
+        case ID_MOD: handleOperator('%'); break;
+        case ID_EQ:  handleEquals(); break;
+        case ID_CLR: handleClear(); break;
+        case ID_BACK: handleBackspace(); break;
+    }
+}
+
 // Subclass procedure so buttons paint with potato colors
 WNDPROC origButtonProc;
 LRESULT CALLBACK ButtonSubclassProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
@@ -212,27 +237,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
 
         case WM_COMMAND: {
             int id = LOWORD(wp);
-            switch (id) {
-                case ID_0: handleDigit('0'); break;
-                case ID_1: handleDigit('1'); break;
-                case ID_2: handleDigit('2'); break;
-                case ID_3: handleDigit('3'); break;
-                case ID_4: handleDigit('4'); break;
-                case ID_5: handleDigit('5'); break;
-                case ID_6: handleDigit('6'); break;
-                case ID_7: handleDigit('7'); break;
-                case ID_8: handleDigit('8'); break;
-                case ID_9: handleDigit('9'); break;
-                case ID_DOT: handleDot(); break;
-                case ID_ADD: handleOperator('+'); break;
-                case ID_SUB: handleOperator('-'); break;
-                case ID_MUL: handleOperator('*'); break;
-                case ID_DIV: handleOperator('/'); break;
-                case ID_MOD: handleOperator('%'); break;
-                case ID_EQ:  handleEquals(); break;
-                case ID_CLR: handleClear(); break;
-                case ID_BACK: handleBackspace(); break;
-            }
+            handleCommand(id);
             break;
         }
 
@@ -269,10 +274,51 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow) {
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
+    // Keyboard shortcuts: number row + numeric keypad.
+    // They trigger the same functions as clicking the calculator buttons.
+    ACCEL accelerators[] = {
+        { FVIRTKEY, '0', ID_0 }, { FVIRTKEY, '1', ID_1 },
+        { FVIRTKEY, '2', ID_2 }, { FVIRTKEY, '3', ID_3 },
+        { FVIRTKEY, '4', ID_4 }, { FVIRTKEY, '5', ID_5 },
+        { FVIRTKEY, '6', ID_6 }, { FVIRTKEY, '7', ID_7 },
+        { FVIRTKEY, '8', ID_8 }, { FVIRTKEY, '9', ID_9 },
+
+        { FVIRTKEY, VK_NUMPAD0, ID_0 }, { FVIRTKEY, VK_NUMPAD1, ID_1 },
+        { FVIRTKEY, VK_NUMPAD2, ID_2 }, { FVIRTKEY, VK_NUMPAD3, ID_3 },
+        { FVIRTKEY, VK_NUMPAD4, ID_4 }, { FVIRTKEY, VK_NUMPAD5, ID_5 },
+        { FVIRTKEY, VK_NUMPAD6, ID_6 }, { FVIRTKEY, VK_NUMPAD7, ID_7 },
+        { FVIRTKEY, VK_NUMPAD8, ID_8 }, { FVIRTKEY, VK_NUMPAD9, ID_9 },
+
+        { FVIRTKEY, VK_ADD, ID_ADD },
+        { FVIRTKEY, VK_SUBTRACT, ID_SUB },
+        { FVIRTKEY, VK_MULTIPLY, ID_MUL },
+        { FVIRTKEY, VK_DIVIDE, ID_DIV },
+        { FVIRTKEY, VK_DECIMAL, ID_DOT },
+
+        { FVIRTKEY, VK_RETURN, ID_EQ },
+        { FVIRTKEY, VK_BACK, ID_BACK },
+        { FVIRTKEY, VK_ESCAPE, ID_CLR },
+
+        { FVIRTKEY, VK_OEM_PLUS, ID_EQ },
+        { FVIRTKEY | FSHIFT, VK_OEM_PLUS, ID_ADD },
+        { FVIRTKEY, VK_OEM_MINUS, ID_SUB },
+        { FVIRTKEY | FSHIFT, '5', ID_MOD },
+        { FVIRTKEY, VK_OEM_2, ID_DIV }
+    };
+
+    HACCEL hAccel = CreateAcceleratorTableA(
+        accelerators,
+        sizeof(accelerators) / sizeof(accelerators[0])
+    );
+
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        if (!TranslateAccelerator(hwnd, hAccel, &msg)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
     }
+
+    DestroyAcceleratorTable(hAccel);
     return 0;
 }
