@@ -2,7 +2,8 @@
 #include <string>
 using namespace std;
 
-struct Student {
+class Student {
+    public:
     int code;
     string name;
     string school;
@@ -18,6 +19,7 @@ struct Student {
         cout<<code<<" "<<name<<" "<<school<<endl;
     }
 };
+
 
 int main (){
     Student S1(102, "John", "RCA");
