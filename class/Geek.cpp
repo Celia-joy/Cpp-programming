@@ -1,31 +1,47 @@
+
 #include <iostream>
-#include 
+#include <string>
 using namespace std;
 
-class Geek{
-    private:
+class Geek {
+private:
     int code;
     string name;
     string school;
 
-    public:
-    Geek(){}
-    void display(){
-        cout<<code<<" "<<name<<" "<<school<<endl;
-    }
+public:
+    Geek() : code(0), name(""), school("") {}
 
-    int get_Code(){
+    Geek(int code, string name, string school)
+        : code(code), name(name), school(school) {}
+
+    int getCode() const {
         return code;
     }
-    void set_Code(int code){
-        this->code = code;
+
+    string getName() const {
+        return name;
     }
-    void set_name(string name){
-        this->name = name;
+
+    string getSchool() const {
+        return school;
     }
-    void set_school(string school){
-        this->school = school;
-    }        
+
+    void setCode(int newCode) {
+        code = newCode;
+    }
+
+    void setName(const string& newName) {
+        name = newName;
+    }
+
+    void setSchool(const string& newSchool) {
+        school = newSchool;
+    }
+
+    void display() const {
+        cout << "Code: " << code
+             << ", Name: " << name
+             << ", School: " << school << endl;
+    }
 };
-
-

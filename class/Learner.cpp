@@ -1,44 +1,47 @@
+
 #include <iostream>
 #include <string>
 using namespace std;
 
-class Student {
-    public:
+class Learner {
+private:
     int code;
     string name;
     string school;
 
-    Student (int id, string name, string school){
-        code = id;
-        name = name;
-        school = school;
-    }
-    Student(){}
+public:
+    Learner() : code(0), name(""), school("") {}
 
-    void display(){
-        cout<<code<<" "<<name<<" "<<school<<endl;
+    Learner(int code, const string& name, const string& school)
+        : code(code), name(name), school(school) {}
+
+    int getCode() const {
+        return code;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    string getSchool() const {
+        return school;
+    }
+
+    void setCode(int newCode) {
+        code = newCode;
+    }
+
+    void setName(const string& newName) {
+        name = newName;
+    }
+
+    void setSchool(const string& newSchool) {
+        school = newSchool;
+    }
+
+    void display() const {
+        cout << "Code: " << code
+             << ", Name: " << name
+             << ", School: " << school << endl;
     }
 };
-
-
-int main (){
-    Student S1(102, "John", "RCA");
-    S1.display();
-
-    Student S2;
-    S2.code = 105;
-    S2.name = "Mary";
-    S2.school = "FAWE";
-    S2.display();
-
-    Student S3 = {107, "Claude", "RCA"};
-    S3.display();
-
-    Student *Sy = new Student(108, "Mark", "RCA");
-    Sy -> display();
-
-    Student S5{1010, "Ganza", "RCA"};
-    S5.display();
-
-    return 0;
-}

@@ -1,11 +1,22 @@
+
 #include <iostream>
 #include <string>
 using namespace std;
 
-class Animal{
-    public:
-    int code = 105;
-    void Sound(){
-        cout<<"Animal makes sound"<<endl;
+class Animal {
+private:
+    int code;
+
+public:
+    Animal(int code = 105) : code(code) {}
+
+    int getCode() const {
+        return code;
     }
+
+    virtual void Sound() const {
+        cout << "Animal makes sound" << endl;
+    }
+
+    virtual ~Animal() = default;
 };
