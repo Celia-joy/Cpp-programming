@@ -3,4 +3,4 @@ class Cat : public Animal{
     void Sound(){
         cout<<"Cat meows"<<endl;
     }
-}
+};
